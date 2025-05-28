@@ -1,0 +1,28 @@
+Date:30-08-2024
+status updates:
+
+ completed
+++++++++++++++++++++
+    out of all 25 points
+
+1) first 15 points I completed both user interface and aws cli(in aws cli except 14th point)
+2)Documentation completed for user interface
+3)script activities:
+    first script completed.
+3)and 16-20 points completed
+
+   pending
++++++++++++++++
+
+1)script activities:
+     2nd script is pending 
+  
+2)21-25 points are pending with documentation
+
+all the pending works with documentation be completed by Monday
+
+Reference links
+++++++++++++++++++++++
+
+https://www.youtube.com/watch?v=8UnZNV3chnk
+I refered the cloudwatch through this link

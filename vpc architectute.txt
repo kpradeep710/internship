@@ -1,0 +1,80 @@
+The diagram you've uploaded represents a typical AWS VPC (Virtual Private Cloud) architecture with public and private subnets. Here’s a detailed explanation of its structure and how each component interacts:
+
+1. VPC (Virtual Private Cloud)
+++++++++++++++++++++++++++++++++++++++++
+
+VPC Boundary: The entire architecture is contained within an orange box labeled VPC, which represents an isolated network in AWS.
+The VPC IP address range is 10.0.0.0/16, which means the network can support a large range of private IP addresses for its resources.
+
+2. Internet Gateway (IGW)
++++++++++++++++++++++++++++++++++
+Positioned at the top of the VPC.
+The Internet Gateway (IGW) enables communication between the VPC and the internet. It routes traffic to and from resources hosted in public subnets within the VPC.
+
+3. Router
+++++++++++++++++++
+Router in the diagram connects the IGW to internal subnets by managing traffic routing within the VPC.
+It connects both Public Subnets and Private Subnets by directing traffic based on their respective route tables.
+
+4. Route Tables
+++++++++++++++++++++++
+Route Tables define the traffic flow for resources in subnets, either directing them towards the internet or other subnets within the VPC:
+
+Public Route Table: Associated with public subnets. This route table allows traffic to flow between the internet and the public subnet via the Internet Gateway.
+
+Private Route Table: Used by the private subnet. It doesn’t have a direct internet gateway for security reasons. Instead, it uses a NAT Gateway for internet-bound traffic.
+
+Main Route Table:
++++++++++++++++++++++++++
+Destination 10.0.0.0/16: Local traffic within the VPC.
+Destination 0.0.0.0/0: Internet-bound traffic is routed through the NAT Gateway (nat-gw-id), allowing private subnet resources to initiate internet connections.
+
+Custom Route Table:
+++++++++++++++++++++++
+Destination 10.0.0.0/16: Local traffic remains within the VPC.
+Destination 0.0.0.0/0: Routes internet-bound traffic through the Internet Gateway (igw-id).
+
+5. Network Access Control List (NACL)
+++++++++++++++++++++++++++++++++++++++++++
+NACL is a subnet-level security layer that controls inbound and outbound traffic based on rules.
+It acts as a firewall for controlling traffic to and from one or more subnets.
+
+6. Public Subnets
++++++++++++++++++++++++
+Resources placed in public subnets have access to the internet via the Internet Gateway.
+
+NAT Gateway:
+++++++++++++++++
+Positioned in the public subnet, it allows resources in private subnets to access the internet for tasks such as downloading patches or software updates while keeping them hidden from direct internet access.
+It uses an Elastic IP address to communicate with the internet.
+
+Public EC2 Instance (Web Server):
+++++++++++++++++++++++++++++++++++++
+An EC2 instance (virtual server) hosted in the public subnet, typically used for services that need direct access to the internet, like web servers.
+Protected by a Security Group, which controls inbound and outbound traffic at the instance level.
+
+7. Private Subnets
+++++++++++++++++++++++++++++
+
+Private EC2 Instance (Backend Service):
+EC2 instance in the private subnet running a backend service. It is isolated from the internet for security reasons.
+These instances communicate only with internal resources and cannot directly access or be accessed by the internet.
+
+MySQL Database (RDS):
+A relational database is hosted in a private subnet for added security. Only internal resources like backend services can communicate with the database.
+The Security Group attached to the database defines what kind of traffic can access it, usually only allowing traffic from other specific resources (like EC2 instances).
+
+8. Security Groups
++++++++++++++++++++++++++
+Security Groups act as firewalls for individual EC2 instances and other resources.
+Each instance (both public and private) is protected by a Security Group that allows only permitted types of traffic. For example:
+The web server may allow inbound HTTP and HTTPS traffic from the internet.
+The private backend services may only allow traffic from the web server.
+
+Summary of Traffic Flow:
+Internet Access for Public Subnet:
+Public EC2 instances (like the web server) directly access the internet via the Internet Gateway.
+Private Subnet Access:
+Private instances and databases do not have direct internet access. Instead, they use the NAT Gateway located in the public subnet to initiate outbound internet connections.
+Inbound traffic to private instances comes only from internal resources like the public web server or other services within the VPC.
+This architecture provides a balance between publicly accessible services (such as a web server) and privately secured resources (like databases and backend services) within an isolated and secure network structure.
